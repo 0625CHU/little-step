@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>我的导航主页</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --text: #f1f5f9;
+    --text-muted: rgba(226, 232, 240, 0.78);
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-border: rgba(148, 163, 184, 0.3);
+    --card-hover: rgba(255, 255, 255, 0.12);
+    --accent: #60a5fa;
+    --accent-cyan: #38bdf8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background-color: var(--bg);
+  }
+
+  body {
+    font-family: "Times New Roman", "SimSun", "宋体", "NSimSun", "STSong", serif;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    overflow-x: hidden;
+    background-color: var(--bg);
+    background-image: linear-gradient(-45deg, #0a0e1a, #0e1b33, #13254a, #060a14);
+    background-size: 400% 400%;
+    background-attachment: fixed;
+    animation: gradientShift 24s ease infinite;
+    position: relative;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+    -webkit-mask-image: radial-gradient(circle at 50% 38%, #000 0%, transparent 80%);
+    mask-image: radial-gradient(circle at 50% 38%, #000 0%, transparent 80%);
+  }
+
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(110px); pointer-events: none; z-index: 0;
+  }
+  .orb-a {
+    width: 480px; height: 480px; opacity: 0.5;
+    background: radial-gradient(circle, #3b82f6, transparent 70%);
+    top: -140px; left: -120px;
+  }
+  .orb-b {
+    width: 520px; height: 520px; opacity: 0.45;
+    background: radial-gradient(circle, #4f46e5, transparent 70%);
+    bottom: -160px; right: -140px;
+  }
+  .orb-c {
+    width: 380px; height: 380px; opacity: 0.32;
+    background: radial-gradient(circle, #06b6d4, transparent 70%);
+    top: 42%; left: 55%;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 1000px;
+    text-align: center;
+  }
+
+  .weather {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 30px;
+    padding: 10px 22px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  }
+  .weather .weather-icon { font-size: 1.5rem; line-height: 1; }
+  .weather .weather-location {
+    font-size: 0.98rem; font-weight: 600; letter-spacing: 0.5px; color: var(--text);
+  }
+  .weather .weather-temp {
+    font-size: 1.45rem; font-weight: 700; color: var(--accent-cyan);
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .weather .weather-desc { font-size: 0.92rem; color: var(--text-muted); }
+
+  .hero { margin-bottom: 44px; }
+
+  .greeting {
+    font-size: 1.15rem; letter-spacing: 0.5px;
+    color: var(--text-muted); margin-bottom: 12px;
+  }
+
+  .clock {
+    font-size: clamp(3.5rem, 12vw, 6.5rem);
+    font-weight: 700; letter-spacing: 2px; line-height: 1;
+    color: var(--text);
+    text-shadow: 0 0 42px rgba(96, 165, 250, 0.55), 0 8px 30px rgba(0, 0, 0, 0.5);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .clock .seconds {
+    font-size: 0.45em; color: var(--accent-cyan);
+    font-weight: 500; margin-left: 6px;
+  }
+
+  .date {
+    margin-top: 16px; font-size: 1.05rem;
+    color: var(--text-muted); letter-spacing: 1px;
+  }
+
+  .search-box {
+    display: flex; align-items: center; gap: 12px;
+    max-width: 560px; margin: 0 auto 48px;
+    padding: 14px 22px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+  .search-box:focus-within {
+    background: var(--card-hover);
+    border-color: rgba(96, 165, 250, 0.65);
+    box-shadow: 0 14px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(96, 165, 250, 0.3);
+  }
+  .search-box .icon { font-size: 1.2rem; opacity: 0.85; }
+  .search-box input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-size: 1.05rem;
+    font-family: inherit;
+  }
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 22px;
+  }
+
+  .card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; padding: 30px 18px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    text-decoration: none; color: var(--text);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+  .card:hover {
+    transform: translateY(-8px);
+    background: var(--card-hover);
+    border-color: rgba(96, 165, 250, 0.65);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(96, 165, 250, 0.4);
+  }
+  .card .logo {
+    width: 76px; height: 76px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 18px; font-size: 2.3rem; font-weight: 700;
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  }
+  .card .name { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; color: var(--text); }
+  .card .desc { font-size: 0.82rem; color: var(--text-muted); }
+
+  .footer {
+    margin-top: 56px; font-size: 0.82rem;
+    color: var(--text-muted); opacity: 0.85;
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+    .card { padding: 22px 12px; }
+    .card .logo { width: 64px; height: 64px; font-size: 2rem; }
+    .hero { margin-bottom: 32px; }
+    .weather { padding: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+
+  <div class="container">
+    <div class="weather" id="weather">
+      <span class="weather-icon" id="weatherIcon">📍</span>
+      <span class="weather-location" id="weatherLocation">定位中…</span>
+      <span class="weather-temp" id="weatherTemp">--°C</span>
+      <span class="weather-desc" id="weatherDesc"></span>
+    </div>
+
+    <div class="hero">
+      <div class="greeting" id="greeting">你好</div>
+      <div class="clock" id="clock">
+        <span id="time">00:00</span><span class="seconds" id="seconds">00</span>
+      </div>
+      <div class="date" id="date">加载中…</div>
+    </div>
+
+    <form class="search-box" id="searchForm">
+      <span class="icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜索或输入网址，回车跳转…" autocomplete="off" />
+    </form>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="footer">为每一天，留一个简洁的开始 ✨</div>
+  </div>
+
+  <script>
+    const sites = [
+      { name: "GitHub",         desc: "代码托管",  url: "https://github.com",            color: "#24292e", icon: "GH" },
+      { name: "Stack Overflow", desc: "技术问答",  url: "https://stackoverflow.com",     color: "#F58025", icon: "SO" },
+      { name: "MDN",            desc: "Web 文档",  url: "https://developer.mozilla.org", color: "#ffffff", icon: "MDN", textColor: "#000000" },
+      { name: "npm",            desc: "包管理",    url: "https://www.npmjs.com",         color: "#CB3837", icon: "npm" },
+      { name: "Google",         desc: "搜索引擎",  url: "https://www.google.com",        color: "#4285F4", icon: "G" },
+      { name: "百度",           desc: "搜索引擎",  url: "https://www.baidu.com",         color: "#2932E1", icon: "百" },
+      { name: "哔哩哔哩",       desc: "视频弹幕",  url: "https://www.bilibili.com",      color: "#FB7299", icon: "B" },
+      { name: "知乎",           desc: "问答社区",  url: "https://www.zhihu.com",         color: "#0084FF", icon: "知" },
+      { name: "淘宝",           desc: "购物平台",  url: "https://www.taobao.com",        color: "#FF5000", icon: "淘" },
+    ];
+
+    const grid = document.getElementById("grid");
+    sites.forEach(site => {
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = site.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML =
+        `<div class="logo" style="background:${site.color};color:${site.textColor || '#fff'}">${site.icon}</div>` +
+        `<span class="name">${site.name}</span>` +
+        `<span class="desc">${site.desc}</span>`;
+      grid.appendChild(a);
+    });
+
+    function weatherMeta(code, isDay) {
+      const map = {
+        0:  { icon: isDay ? "☀️" : "🌙", desc: "晴" },
+        1:  { icon: isDay ? "🌤️" : "🌙", desc: "基本晴朗" },
+        2:  { icon: "⛅", desc: "多云" },
+        3:  { icon: "☁️", desc: "阴" },
+        45: { icon: "🌫️", desc: "雾" },
+        48: { icon: "🌫️", desc: "雾凇" },
+        51: { icon: "🌦️", desc: "小毛毛雨" },
+        53: { icon: "🌦️", desc: "毛毛雨" },
+        55: { icon: "🌧️", desc: "大毛毛雨" },
+        56: { icon: "🌧️", desc: "冻毛毛雨" },
+        57: { icon: "🌧️", desc: "冻毛毛雨" },
+        61: { icon: "🌧️", desc: "小雨" },
+        63: { icon: "🌧️", desc: "中雨" },
+        65: { icon: "🌧️", desc: "大雨" },
+        66: { icon: "🌧️", desc: "冻雨" },
+        67: { icon: "🌧️", desc: "冻雨" },
+        71: { icon: "🌨️", desc: "小雪" },
+        73: { icon: "🌨️", desc: "中雪" },
+        75: { icon: "❄️", desc: "大雪" },
+        77: { icon: "❄️", desc: "雪粒" },
+        80: { icon: "🌦️", desc: "小阵雨" },
+        81: { icon: "🌧️", desc: "阵雨" },
+        82: { icon: "⛈️", desc: "强阵雨" },
+        85: { icon: "🌨️", desc: "小阵雪" },
+        86: { icon: "❄️", desc: "阵雪" },
+        95: { icon: "⛈️", desc: "雷雨" },
+        96: { icon: "⛈️", desc: "雷雨冰雹" },
+        99: { icon: "⛈️", desc: "雷雨冰雹" },
+      };
+      return map[code] || { icon: "🌡️", desc: "" };
+    }
+
+    function showWeather(lat, lon, cityName) {
+      document.getElementById("weatherLocation").textContent = cityName || "当前位置";
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day&timezone=auto`)
+        .then(r => r.json())
+        .then(d => {
+          const cur = d.current;
+          const temp = Math.round(cur.temperature_2m);
+          const meta = weatherMeta(cur.weather_code, cur.is_day === 1);
+          document.getElementById("weatherIcon").textContent = meta.icon;
+          document.getElementById("weatherTemp").textContent = temp + "°C";
+          document.getElementById("weatherDesc").textContent = meta.desc;
+        })
+        .catch(() => {
+          document.getElementById("weatherIcon").textContent = "📍";
+          document.getElementById("weatherTemp").textContent = "--°C";
+          document.getElementById("weatherDesc").textContent = "天气获取失败";
+        });
+    }
+
+    function locateByIP() {
+      fetch("https://ipwho.is/")
+        .then(r => r.json())
+        .then(d => {
+          if (!d.success) throw new Error("IP locate failed");
+          showWeather(d.latitude, d.longitude, d.city || d.region || "");
+        })
+        .catch(() => {
+          document.getElementById("weatherLocation").textContent = "定位失败";
+          document.getElementById("weatherIcon").textContent = "📍";
+          document.getElementById("weatherDesc").textContent = "";
+        });
+    }
+
+    function locateByGeolocation() {
+      if (!navigator.geolocation) { locateByIP(); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude, longitude } = pos.coords;
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh`)
+            .then(r => r.json())
+            .then(d => showWeather(latitude, longitude, d.city || d.principalSubdivision || ""))
+            .catch(() => showWeather(latitude, longitude, ""));
+        },
+        () => locateByIP(),
+        { timeout: 8000, maximumAge: 600000 }
+      );
+    }
+
+    locateByGeolocation();
+
+    function updateClock() {
+      const now = new Date();
+      const timeParts = new Intl.DateTimeFormat("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+      }).formatToParts(now);
+      const get = (type) => timeParts.find(p => p.type === type)?.value || "00";
+      const h = get("hour"), m = get("minute"), s = get("second");
+
+      document.getElementById("time").textContent = `${h}:${m}`;
+      document.getElementById("seconds").textContent = s;
+
+      const dateParts = new Intl.DateTimeFormat("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        year: "numeric", month: "numeric", day: "numeric", weekday: "long",
+      }).formatToParts(now);
+      const dGet = (type) => dateParts.find(p => p.type === type)?.value || "";
+      document.getElementById("date").textContent =
+        `${dGet("year")}年${dGet("month")}月${dGet("day")}日 ${dGet("weekday")}`;
+
+      const hour = parseInt(h, 10);
+      let greeting = "夜深了，注意休息 🌙";
+      if (hour >= 5 && hour < 9)        greeting = "早上好 ☀️";
+      else if (hour >= 9 && hour < 12)  greeting = "上午好 🌤️";
+      else if (hour >= 12 && hour < 14) greeting = "中午好 🌞";
+      else if (hour >= 14 && hour < 18) greeting = "下午好 🌤️";
+      else if (hour >= 18 && hour < 23) greeting = "晚上好 🌙";
+      document.getElementById("greeting").textContent = greeting;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = searchInput.value.trim();
+      if (!q) return;
+      const isUrl = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(\/.*)?$/.test(q);
+      const target = isUrl
+        ? (/^https?:\/\//i.test(q) ? q : "https://" + q)
+        : "https://www.baidu.com/s?wd=" + encodeURIComponent(q);
+      window.open(target, "_blank");
+      searchInput.value = "";
+    });
+  </script>
+</body>
+</html>
